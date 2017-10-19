@@ -31,8 +31,7 @@
                                 };
 
 
-                                var  us1 = [];
-                                us1 = ({{prona.id_vendodhje_id}});
+
                                 function out_layer(map, options){
                                     var dataset = new L.GeoJSON.AJAX(" {% url 'prona:prona_dataset' %}",{
                                         pointToLayer: pointToLayer,
@@ -52,7 +51,7 @@
              
 
                                 function us(feature) {
-                                        if (feature.properties.id_vendodhje === us1) return true
+                                        if (feature.properties.id_vendodhje === {{pronat.id_vendodhje_id}}) return true
                                     }
                                  console.log(us);
                                 function onEachFeature(feature, layer) {
