@@ -1,0 +1,84 @@
+{% extends 'prona/base.html' %}
+
+{% block body %}
+
+    {% if d %}
+    {% include 'prona/leaflet_filter.html' %}
+        <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="property-detail-box">
+                <h2 class="heading text-center">GJEJ <span class="accent">PRONËN </span>QË PO <span class="accent">KËRKON</span> </h2>
+                <div class="controls">
+
+                    <ul class="ul_prona_detail">
+                        {% for prona in d %}
+                        <li class="li_prona_detail">
+                            <h3> {{ prona.id_lloji }}</h3>
+                            <h5> Çmimi: {{ prona.cmimi }}</h5>
+                            <h5> Sipërfaqa: {{prona.size}}</h5>
+                            <h6> {{ prona.id_vendodhje }}</h6>
+                            <script type="text/javascript">
+                                var geojsonMarkerOptions = {
+                                    radius: 8,
+                                    fillColor: "#ff7800",
+                                    color: "#000",
+                                    weight: 1,
+                                    opacity: 1,
+                                    fillOpacity: 0.8
+                                };
+                                var geojsonMarkerOptions1 = {
+                                    radius: 8,
+                                    fillColor: "#fff",
+                                    color: "#000",
+                                    weight: 1,
+                                    opacity: 1,
+                                    fillOpacity: 0.8
+                                };
+
+                                function out_layer(map, options){
+                                    var dataset = new L.GeoJSON.AJAX(" {% url 'prona:prona_dataset' %}",{
+                                        filter: biznes,
+                                        pointToLayer: function (feature, latlng) {
+                                            if (feature.properties.id_biznes === 1){
+                                                return L.circleMarker(latlng, geojsonMarkerOptions);
+                                            }else{
+                                                return L.circleMarker(latlng, geojsonMarkerOptions1);
+                                            }
+                                        },
+                                        onEachFeature: onEachFeature
+                                    });
+                                    dataset.addTo(map);
+                                    function biznes(feature) {
+                                      if (feature.properties.id_biznes === {{ prona.id_biznes_id }}) return true
+                                    }
+                                }
+                                function onEachFeature(feature, layer) {
+                                    layer.bindPopup("<b>Cmimi:</b> " + feature.properties.cmimi+
+                                            "<br><b>Dhoma: </b>" + feature.properties.dhoma+
+                                            "<br><b>Banjo: </b>" + feature.properties.banjo+
+                                            "<br>" + "<b><a href=http://127.0.0.1:8000/home/" +feature.properties.pk + "/detail/>Shiko Pronën</a></b>");
+                                }
+
+                            </script>
+
+                            {% if user.is_authenticated  %}
+                                <form action="{% url 'prona:prona_detail' prona.id %}" method="get" style="display: inline; float: right">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="prona_id" value="{{ prona.id}}"/>
+                                    <button type="submit" class="btn btn-default btn-sm text-white">
+                                        <span class="glyphicon glyphicon-eye-open"></span>&nbsp; Shiko
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        </div>
+    {% else %}
+        <h3> You don't have any prona</h3>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'prona/base.html' %}
+{% block body %}
+    {% if c %}
+    {% include 'prona/leaflet_filter.html' %}
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <div class="property-detail-box">
+                <h2 class="heading text-center">GJEJ <span class="accent">PRONËN </span>QË PO <span class="accent">KËRKON</span> </h2>
+                    <div class="controls">
+                        <ul class="">
+                            <h1> {{ c.titulli }}</h1>
+                            <h3> {{ c.cmimi }}</h3>
+                            <h4> {{ c.id_vendodhje}}</h4>
+                            <h4> {{ c.id_lloji }}</h4>
+                            <h4> {{ c.dhoma }}</h4>
+                            <h4> {{ c.banjo }}</h4>
+                            <h4> {{ c.size }}</h4>
+                            <h4> {{ c.pershkrim }}</h4>
+                            <h4> {{ c.id_biznes }}</h4>
+                            <h4> {{ c.hits }}</h4>
+                            <h4> {{ c.id_user }}</h4>
+                            <script type="text/javascript">
+                                function out_layer(map, options){
+                                    var dataset = new L.GeoJSON.AJAX(" {% url 'prona:prona_dataset' %}",{
+                                        filter: us,
+                                        pointToLayer: function(feature, latlng){
+                                            return L.marker(latlng, {});
+
+
+                                        },
+                                        onEachFeature: onEachFeature,
+
+                                    });
+
+
+                                    function onEachFeature(feature, layer) {
+                                            layer.bindPopup("<b>Cmimi:</b> " + feature.properties.cmimi+
+                                                "<br><b>Dhoma: </b>" + feature.properties.dhoma+
+                                                "<br><b>Titulli: </b>" + feature.properties.titulli+
+                                                "<br><b>Banjo: </b>" + feature.properties.banjo);
+                                     }
+                                    dataset.on('click', function(e){
+                                        map.setView(e.latlng, 18);
+                                    });
+                                    map.on("load",function() { console.log("all visible tiles have been loaded") });
+                                    dataset.addTo(map);
+                                    function us(feature) {
+                                        if (feature.properties.pk === "{{ c.id }}") return true
+                                    }
+                                }
+                            </script>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+

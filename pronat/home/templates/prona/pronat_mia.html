@@ -1,0 +1,82 @@
+{% extends 'prona/base.html' %}
+
+{% block body %}
+
+    {% if f %}
+    {% include 'prona/leaflet_filter.html' %}
+        <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="property-detail-box">
+                <h2 class="heading text-center">GJEJ <span class="accent">PRONËN </span>QË PO <span class="accent">KËRKON</span> </h2>
+                <div class="controls">
+
+                    <ul class="ul_prona_detail">
+                        {% for prona in f %}
+                        <li class="li_prona_detail">
+                            <h3> {{ prona.id_lloji }}</h3>
+                            <h5> Çmimi: {{ prona.cmimi }}</h5>
+                            <h5> Sipërfaqa: {{prona.size}}</h5>
+                            <h6> {{ prona.id_vendodhje }}</h6>
+
+                            {% if user.is_authenticated %}
+
+                                <form action="{% url 'prona:prona_detail' prona.id %}" method="get" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="prona_id" value="{{ prona.id}}"/>
+                                    <button type="submit" class="btn btn-default btn-sm text-white">
+                                        <span class="glyphicon glyphicon-eye-open"></span>&nbsp; Shiko
+                                    </button>
+                                </form>
+                                 <form action="{% url 'prona:prona-update' prona.id %}" method="get" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="prona_id" value="{{ prona.id}}"/>
+                                    <button type="submit" class="btn btn-default btn-sm text-white">
+                                        <span class="glyphicon glyphicon-edit"></span>&nbsp; Edit
+                                    </button>
+                                </form>
+
+                                <form action="{% url 'prona:prona-delete' prona.id%}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="prona_id" value="{{ prona.id}}"/>
+                                    <button type="submit" class="btn btn-default btn-sm text-white">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </form>
+                                <script type="text/javascript">
+                                    function out_layer(map, options){
+                                        var dataset = new L.GeoJSON.AJAX(" {% url 'prona:prona_dataset' %}",{filter: us, onEachFeature: onEachFeature});
+                                        dataset.addTo(map);
+                                        function us(feature) {
+                                            if (feature.properties.id_user === {{ prona.id_user_id }}) return true
+                                        }
+                                    }
+                                    function onEachFeature(feature, layer) {
+                                        layer.bindPopup("<b>Cmimi:</b> " + feature.properties.cmimi+
+                                                "<br><b>Dhoma: </b>" + feature.properties.dhoma+
+                                                "<br><b>Banjo: </b>" + feature.properties.banjo+
+                                                "<br>" + "<b><a href=http://127.0.0.1:8000/home/" +feature.properties.pk + "/detail/>Shiko Pronën</a></b>");
+                                    }
+
+                                </script>
+
+                            {% else %}
+                                <form action="{% url 'prona:prona_detail' prona.id %}" method="get" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="prona_id" value="{{ prona.id}}"/>
+                                    <button type="submit" class="btn btn-default btn-sm text-white">
+                                        <span class="glyphicon glyphicon-eye-open"></span>&nbsp; Shiko
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        </div>
+    {% else %}
+        <h3> You don't have any prona</h3>
+    {% endif %}
+{% endblock %}

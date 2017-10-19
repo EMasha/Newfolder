@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}pronat.al{% endblock %}</title>
+    {% load staticfiles %}
+    {% load static %}
+    {% load leaflet_tags %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'prona/style.css' %}"/>
+    <script type="text/javascript" src="{% static 'dist/leaflet.ajax.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dist/ajax.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dist/leaflet-search.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'leaflet/dist/leaflet.awesome-markers.css' %} ">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse" >
+    <div class="container-fluid">
+        <!-- header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'prona:home' %}"><span class="text-white"> Pronat.AL</span></a>
+        </div>
+        <!-- butonat e tjere -->
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="">
+                    <a href="{% url 'prona:home' %}">
+                        <span class="text-white glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp; <span class="text-white">Rreth PRONAT.AL</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{% url 'prona:detail' 1%}">
+                        <span class="text-white glyphicon glyphicon-barcode" aria-hidden="true"></span>&nbsp; <span class="text-white">PRONA ME QERA</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{% url 'prona:detail' 2%}">
+                        <span class="text-white glyphicon glyphicon-qrcode" aria-hidden="true"></span>&nbsp; <span class="text-white">PRONA NE SHITJE</span>
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="#">
+                        <span class="text-white glyphicon glyphicon-earphone" aria-hidden="true"></span>&nbsp; <span class="text-white">KONTAKT</span>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+
+                {% if user.is_authenticated %}
+                    <li class="">
+                        <a href="{% url 'prona:pronat_mia' user.id %}">
+                            <span class="text-white glyphicon glyphicon-plus " aria-hidden="true"></span>&nbsp; <span class="text-white">PRONAT E MIA</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{% url 'prona:prona-add' %}">
+                            <span class="text-white glyphicon glyphicon-plus " aria-hidden="true"></span>&nbsp; <span class="text-white">SHTO PRONE</span>
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a href="{% url 'prona:logout' %}"><span class="text-white">Welcome, {{ user.username }}.</span>
+                            <span class="text-white glyphicon glyphicon-log-out " aria-hidden="true"></span>&nbsp; <span class="text-white">Dil</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="">
+                        <a href="{% url 'prona:login' %}" method="POST">{% csrf_token %}
+                            <span class="glyphicon glyphicon-log-in text-white" aria-hidden="true"></span>&nbsp; <span class="text-white">HYR</span>
+                         </a>
+                    </li>
+                    <li class="">
+                        <a href="{% url 'prona:register' %}" method="get" >{% csrf_token %}
+                            <span class="glyphicon glyphicon-user text-white" aria-hidden="true"></span>&nbsp; <span class="text-white">REGJISTROHU</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% block body %}
+{% endblock %}
+</body>
+</html>
