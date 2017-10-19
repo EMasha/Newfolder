@@ -35,7 +35,7 @@
                                 function out_layer(map, options){
                                     var dataset = new L.GeoJSON.AJAX(" {% url 'prona:prona_dataset' %}",{
                                         pointToLayer: pointToLayer,
-                                        filter: us,
+
                                         onEachFeature: onEachFeature});
 
                                     dataset.addTo(map);
